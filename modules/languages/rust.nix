@@ -28,10 +28,16 @@ in {
     lsp = {
       enable = mkEnableOption "Rust LSP support (rust-analyzer with extra tools)" // {default = config.vim.languages.enableLSP;};
 
-      package = mkOption {
-        description = "rust-analyzer package";
-        type = types.package;
-        default = pkgs.rust-analyzer;
+      # package = mkOption {
+      #   description = "rust-analyzer package";
+      #   type = types.package;
+      #   default = pkgs.rust-analyzer;
+      # };
+
+      cmd = mkOption {
+        description = "lsp command to run";
+        type = types.str;
+        default = "${lib.getExe pkgs.rust-analyzer}";
       };
 
       opts = mkOption {
@@ -118,7 +124,7 @@ in {
           server = {
             capabilities = capabilities,
             on_attach = rust_on_attach,
-            cmd = {"${cfg.lsp.package}/bin/rust-analyzer"},
+            cmd = {"${cfg.lsp.cmd}"},
             settings = {
               ${cfg.lsp.opts}
             }
